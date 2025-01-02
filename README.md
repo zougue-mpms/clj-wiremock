@@ -1,10 +1,30 @@
 # clj-wiremock
-[![Build Status](https://travis-ci.org/kelveden/clj-wiremock.svg?branch=master)](https://travis-ci.org/kelveden/clj-wiremock)
 
 Clojure bindings for [WireMock](http://wiremock.org/)
 
+## IMPORTANT
+
+* This is a fork of [kelveden/clj-wiremock](https://github.com/kelveden/clj-wiremock)
+* With changes from another fork [hprange/clj-wiremock](https://github.com/hprange/clj-wiremock)
+* Upgrades **[Wiremock](https://wiremock.org/)** to version [3.9.2]
+* NOT tested with Extensions
+
+### ResponseTemplateTransformer
+
+To enable ResponseTemplateTransformer, just use `:global-templating?` option.
+
+```clojure
+(wmk/wiremock-fixture [{:dynamic-port?               true
+                          :log-to-console?             true
+                          :global-templating?          true
+                          :using-files-under-directory "test-resources/wiremock"}] run-tests))
+```
+
 ## Usage
-![](https://clojars.org/kelveden/clj-wiremock/latest-version.svg)
+```clojure
+[org.wiremock/wiremock "3.9.2"]
+[zougue-mpms/clj-wiremock "0.1.2-SNAPSHOT"]
+```
 
 ### As a fixture
 Typically you'll want wiremock to fire up at the beginning of your

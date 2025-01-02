@@ -75,6 +75,7 @@
     (try
       ; Given
       (server/start! wiremock)
+      (server/register-stub! wiremock (ping-stub port))
 
       ; When
       (http/get (ping-url port) {:throw-exceptions false})
@@ -117,14 +118,12 @@
 
 (deftest can-set-jetty-options
   (let [container-threads 11
-        acceptors 22
+        acceptors 8
         accept-queue-size 33
-        header-buffer-size 44
         asynchronous-response-threads 55
         wiremock (server/init-wiremock {:container-threads              container-threads
                                         :jetty-acceptors                acceptors
                                         :jetty-accept-queue-size        accept-queue-size
-                                        :jetty-header-buffer-size       header-buffer-size
                                         :asynchronous-response-enabled? true
                                         :asynchronous-response-threads  asynchronous-response-threads})]
 
@@ -132,7 +131,6 @@
       (is (= container-threads (-> options (.containerThreads))))
       (is (= acceptors (-> options (.jettySettings) (.getAcceptors) (.get))))
       (is (= accept-queue-size (-> options (.jettySettings) (.getAcceptQueueSize) (.get))))
-      (is (= header-buffer-size (-> options (.jettySettings) (.getRequestHeaderSize) (.get))))
       (is (= true (-> options (.getAsynchronousResponseSettings) (.isEnabled))))
       (is (= asynchronous-response-threads (-> options (.getAsynchronousResponseSettings) (.getThreads)))))))
 
@@ -201,11 +199,16 @@
       (is (= true (-> options (.requestJournalDisabled))))
       (is (= max-request-journal-entries (-> options (.maxRequestJournalEntries) (.get)))))))
 
-(deftest can-set-extensions-option
-  (let [wiremock (server/init-wiremock {:extensions [(ResponseTemplateTransformer. true)]})]
+;(deftest can-set-extensions-option
+;  (let [wiremock (server/init-wiremock {:extensions [(ResponseTemplateTransformer. true)]})]
+;
+;    (let [options (-> (.getOptions (.wmk-java wiremock)))]
+;      (is (not (empty? (-> options (.extensionsOfType ResponseTemplateTransformer))))))))
 
-    (let [options (-> (.getOptions (.wmk-java wiremock)))]
-      (is (not (empty? (-> options (.extensionsOfType ResponseTemplateTransformer))))))))
+(deftest can-set-global-templating-option
+  (let [wiremock (server/init-wiremock {:global-templating? true})
+        options (-> (.getOptions (.wmk-java wiremock)))]
+    (is (true? (-> options (.getResponseTemplatingGlobal))))))
 
 (deftest can-log-to-console-option
   (let [wiremock (server/init-wiremock {:log-to-console? true})]

@@ -41,7 +41,7 @@
     (get-in (http/get (admin-url _ "/scenarios") {:as :json}) [:body :scenarios]))
 
   (register-stub! [_ stub-content]
-    (http/post (admin-url _ "/mappings/new")
+    (http/post (admin-url _ "/mappings")
                {:body (json/generate-string (->stub stub-content))}))
 
   (requests [_]
@@ -120,6 +120,9 @@
 
     ;; Cross-origin response headers (CORS)
     :stub-cors-enabled? (.stubCorsEnabled config value)
+
+    ;; Global Templating
+    :global-templating? (.globalTemplating config value)
 
     ;; Unrecognizable Option
     (throw (IllegalArgumentException. (str key " is not a recognizable clj-wiremock option.")))))
