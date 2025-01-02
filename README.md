@@ -1,10 +1,30 @@
 # clj-wiremock
-[![Build Status](https://travis-ci.org/kelveden/clj-wiremock.svg?branch=master)](https://travis-ci.org/kelveden/clj-wiremock)
 
 Clojure bindings for [WireMock](http://wiremock.org/)
 
+## IMPORTANT
+
+* This is a fork of [kelveden/clj-wiremock](https://github.com/kelveden/clj-wiremock)
+* With changes from another fork [hprange/clj-wiremock](https://github.com/hprange/clj-wiremock)
+* Upgrades **[Wiremock](https://wiremock.org/)** to version [3.9.2]
+* NOT tested with Extensions
+
+### ResponseTemplateTransformer
+
+To enable ResponseTemplateTransformer, just use `:global-templating?` option.
+
+```clojure
+(wmk/wiremock-fixture [{:dynamic-port?               true
+                          :log-to-console?             true
+                          :global-templating?          true
+                          :using-files-under-directory "test-resources/wiremock"}] run-tests))
+```
+
 ## Usage
-![](https://clojars.org/kelveden/clj-wiremock/latest-version.svg)
+```clojure
+[org.wiremock/wiremock "3.9.2"]
+[zougue-mpms/clj-wiremock "0.1.2-SNAPSHOT"]
+```
 
 ### As a fixture
 Typically you'll want wiremock to fire up at the beginning of your
@@ -140,6 +160,108 @@ e.g.
 ; Specify a scenario name, required state and new state
 (wmk/with-stubs [{:req [:GET "/ping"] :res [200] :scenario "myscenario" :state {:required "Started" :new "pinged"}}] ...)
 ```
+
+## Configuration
+
+You can configure WireMock with the same options available to the Java library (as of version 2.27.2).
+
+### Network ports and binding
+
+```clj
+:port 8000
+:https-port 8001
+:dynamic-port? true
+:dynamic-https-port? true
+:bind-address "192.168.1.111"
+```
+
+### Jetty Configuration
+
+```clj
+:container-threads 5
+:jetty-acceptors 4
+:jetty-accept-queue-size 100
+:jetty-header-buffer-size 16834
+:asynchronous-response-enabled? true
+:asynchronous-response-threads 10
+```
+
+### HTTPS Configuration
+
+```clj
+:keystore-path "/path/to/https-certs-keystore.jks"
+:keystore-password "verysecret!"
+:keystore-type "BKS"
+:key-manager-password "donttell"
+:need-client-auth? true
+:trust-store-path "/path/to/trust-store.jks"
+:trust-store-password "trustme"
+```
+
+### Proxy Settings
+
+```clj
+:enable-browser-proxying? true
+:preserve-host-header? false
+:proxy-host-header "my.otherdomain.com"
+:proxy-via ["my.corporate.proxy", 8080]
+:ca-keystore-path "/path/to/ca-key-store.jks"
+:ca-keystore-password "trustme"
+:ca-keystore-type "JKS"
+```
+
+### File Locations
+
+```clj
+:using-files-under-directory "/path/to/files-and-mappings-root"
+:using-files-under-classpath "root/path/under/classpath"
+```
+
+### Request Journal
+
+```clj
+:disable-request-journal? true
+:max-requests-journal-entries 100
+```
+
+### Notification
+
+```clj
+:log-to-console? true ;syntactic sugar for .notifier(new ConsoleNotifier(true))
+:notifier (reify Notifier
+                   (info [_ _])
+                   (error [_ _])
+                   (error [_ _ _])
+```
+
+### Gzip
+
+```clj
+:gzip-disabled? true
+```
+
+### Extensions
+Supports passing instances of Extension only at this point.
+
+```clj
+:extensions [(ResponseTemplateTransformer. true)]
+```
+
+### Transfer Encoding
+
+Accepts `:always`, `:body-file`, or `:never`.
+
+```clj
+:use-chunked-transfer-encoding :body-file
+```
+
+### Cross-origin response headers (CORS)
+
+```clj
+:stub-cors-enabled? true
+```
+
+You can find more information about each configuration on the [WireMock Configuration](http://wiremock.org/docs/configuration) page.
 
 ## License
 [Eclipse Public License 1.0](http://opensource.org/licenses/eclipse-1.0.php), the same as Clojure.
