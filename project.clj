@@ -1,4 +1,4 @@
-(defproject zougue-mpms/clj-wiremock "0.1.2-SNAPSHOT"
+(defproject com.zougue/clj-wiremock "0.1.2-SNAPSHOT"
   :description "Clojure bindings for WireMock"
   :url "https://github.com/zougue-mpms/clj-wiremock"
   :license {:name "Eclipse Public License - v 1.0"

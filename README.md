@@ -23,7 +23,7 @@ To enable ResponseTemplateTransformer, just use `:global-templating?` option.
 ## Usage
 ```clojure
 [org.wiremock/wiremock "3.9.2"]
-[zougue-mpms/clj-wiremock "0.1.2-SNAPSHOT"]
+[com.zougue/clj-wiremock "0.1.2-SNAPSHOT"]
 ```
 
 ### As a fixture
